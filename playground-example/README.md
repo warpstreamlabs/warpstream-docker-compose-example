@@ -4,4 +4,13 @@ This docker-compose file runs the WarpStream `playground` command in a docker-co
 
 # How to Run
 
-`docker-compose up`
+```bash
+docker-compose rm -f
+docker-compose pull
+```
+
+then:
+
+```bash
+docker-compose up
+```
