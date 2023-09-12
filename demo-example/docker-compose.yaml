@@ -1,0 +1,41 @@
+services:
+  warp:
+      image: public.ecr.aws/warpstream-labs/warpstream_agent_linux_amd64:latest
+      command:
+        - demo
+      environment:
+        - WARPSTREAM_DISCOVERY_HOSTNAME_OVERRIDE=warp
+        - WARPSTREAM_DISCOVERY_KAFKA_HOSTNAME_OVERRIDE=warp
+      healthcheck:
+        # Wait for the Agent to finish setting up the demo before marking it as healthy
+        # to delay the diagnose-connection command from running for a few seconds.
+        test: ["CMD", "sh", "-c", "sleep 10"]
+        interval: 5s
+        timeout: 15s
+        retries: 5
+
+  warp-diagnose:
+      image: public.ecr.aws/warpstream-labs/warpstream_agent_linux_amd64:latest
+      command:
+        - kcmd
+        - -bootstrap-host
+        - warp
+        - -type
+        - diagnose-connection
+      depends_on:
+        warp:
+          condition: service_healthy
+
+  warp-create-topic:
+    image: public.ecr.aws/warpstream-labs/warpstream_agent_linux_amd64:latest
+    command:
+      - kcmd
+      - -bootstrap-host
+      - warp
+      - -type
+      - create-topic
+      - -topic
+      - docker-compose-test-topic
+    depends_on:
+      warp:
+        condition: service_healthy
