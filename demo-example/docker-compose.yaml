@@ -8,6 +8,7 @@ services:
         - -advertiseHostnameCustom
         - warp
       environment:
+        # this is a no-op as it will default on the custom advertised hostname defined above, but you can change this if you want to use a different hostname with Kafka
         - WARPSTREAM_DISCOVERY_KAFKA_HOSTNAME_OVERRIDE=warp
       healthcheck:
         # Wait for the Agent to finish setting up the demo before marking it as healthy
